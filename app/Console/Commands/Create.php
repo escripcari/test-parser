@@ -39,23 +39,23 @@ class Create extends Command
         $html = file_get_contents('https://profstandart.rosmintrud.ru/obshchiy-informatsionnyy-blok/spravochniki-i-klassifikatory-i-bazy-dannykh/okpdtr/');
 
         $crawler = new Crawler($html);
-        $codes = $crawler->filter('td:nth-child(odd)');
-        $names = $crawler->filter('td:nth-child(even)');
+        $codes = $crawler->filter('td:nth-child(1)');
+        $names = $crawler->filter('td:nth-child(2)');
         foreach ($codes as $item)
         {
             $code[] = $item->textContent;
         }
         foreach ($names as $item)
         {
-            $name[] = $item->textContent;
+            $name[] = trim($item->textContent);
         }
 
         for ($i = 0; $i < count($code); $i++)
         {
-            $test = $code[$i]."    ".$name[$i];
-
+            $content[] = $code[$i].';"'.$name[$i].'"';
         }
-        Storage::disk('local')->put('parserTest.csv', $test);
+
+        Storage::put('parserTest.csv', $content);
 
         return 0;
     }
